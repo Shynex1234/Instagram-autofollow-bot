@@ -29,13 +29,14 @@ public final class App {
         System.out.println(System.getProperty("user.dir"));
         System.out.println("");
 
-        String baseUrl ="https://web.de";
-        
+        String baseUrl ="https://patrickhlauke.github.io/recaptcha/";
+        String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36";
         ChromeOptions options = new ChromeOptions();
         List<String> arguments = new ArrayList<String>();
         arguments.add("--profile-directory=Default");
         arguments.add("--start-maximized");
         arguments.add("--disable-plugins-discovery");
+        arguments.add("--user-agent="+userAgent);
         options.addArguments(arguments);
         
         
