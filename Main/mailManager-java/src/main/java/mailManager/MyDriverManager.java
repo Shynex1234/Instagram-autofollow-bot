@@ -9,6 +9,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Point;
 
 public class MyDriverManager {
     
@@ -47,6 +48,10 @@ public class MyDriverManager {
         JavascriptExecutor js = (JavascriptExecutor) driver;  
         js.executeScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
 
+        
+         //to the left screen
+         Point p = new Point(-1800,0);
+     	 driver.manage().window().setPosition(p);
         
         return driver;
     }
