@@ -1,53 +1,94 @@
 package mailManager;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+
+import mailManager.createEMails.webDe;
+import mailManager.createEMails.ManageDb.LiteSQL;
+import mailManager.createEMails.ManageDb.SQLManager;
 
 /**
  * Hello world!
  */
 public final class App {
-    static WebDriver driver=null;
-    private App() {
-    }
+	static ChromeDriver driver = null;
 
-    /**
-     * Says hello to the world.
-     * @param args The arguments of the program.
-     */
-    public static void main(String[] args) {
-        
-        //WebDriverManager.chromedriver().setup();
-        System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+	private App() {
+	}
 
-        System.out.println("");
-        System.out.println(System.getProperty("user.dir"));
-        System.out.println("");
+	/**
+	 * Says hello to the world.
+	 * 
+	 * @param args The arguments of the program.
+	 */
+	public static void main(String[] args) {
+		// setup
+		LiteSQL.connect();
+		SQLManager.onCreate();
 
-        String baseUrl ="https://patrickhlauke.github.io/recaptcha/";
-        String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36";
-        ChromeOptions options = new ChromeOptions();
-        List<String> arguments = new ArrayList<String>();
-        arguments.add("--profile-directory=Default");
-        arguments.add("--start-maximized");
-        arguments.add("--disable-plugins-discovery");
-        arguments.add("--user-agent="+userAgent);
-        options.addArguments(arguments);
-        
-        
-        options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
-        options.setExperimentalOption("useAutomationExtension", false);
-        options.addArguments("disable-infobars");
-        driver = new ChromeDriver(options);
-        
-        
-        
-        driver.get(baseUrl);
-        
-    }
+		driver = MyDriverManager.getDriver();
+
+		WaitForShutdown();
+
+		int startWert=1;
+		for (int i = 0; i < startWert; i++) {
+			
+			try {
+				if(webDe.start(driver)==false){//Ip got rejected
+					System.out.println("Ip got rejected");
+					shutDown();
+				}
+				driver.close();
+				MyDriverManager.wait(700,900);
+			} catch (Exception e) { System.out.println("Account konnte wegen eines fehlers nicht erstellt werden: "+e.getMessage());}
+			if((i+1)!=startWert){
+				driver=MyDriverManager.getDriver();
+			}
+			
+		}
+		shutDown();
+	}
+
+	static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+	public static void WaitForShutdown() {
+		new Thread(() -> {
+
+			String line = "";
+
+			try {
+
+				while ((line = reader.readLine()) != null) {
+					if (line.equalsIgnoreCase("stop")) {
+
+						shutDown();
+						break;
+					} else {
+						System.out.println("Use 'stop' to stop the program");
+					}
+
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}).start();
+	}
+
+	private static void shutDown() {
+		driver.close();
+		LiteSQL.disconnect();
+		try {
+			System.exit(0);
+			reader.close();
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+		
+	}
 }
