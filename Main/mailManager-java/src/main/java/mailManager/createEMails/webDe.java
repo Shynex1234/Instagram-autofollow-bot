@@ -5,7 +5,6 @@ import java.util.Locale;
 import java.util.Random;
 
 import com.github.javafaker.Faker;
-import com.github.javafaker.PhoneNumber;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -124,11 +123,13 @@ public class webDe {
                 canSolveCaptchaNow=false;
                 zipCode = faker.address().zipCode();
                 setPlz(zipCode);
+                OtherError=false;
             }
             //remake phoneNumber
             if(MyDriverManager.ElementExistsXpath("/html/body/onereg-app/div/onereg-form/div/div/form/section/section[4]/onereg-password-recovery/fieldset/onereg-progress-meter/onereg-form-row[1]/onereg-error-messages/pos-form-message/div/span/span")){
                 canSolveCaptchaNow=false;
                 phoneNumber = setPhoneNumber(faker);
+                OtherError=false;
             }
 
             //Wenn ein anderer Fehler auftritt
@@ -173,8 +174,6 @@ public class webDe {
             driver.findElement(By.id("mobilePhone")).clear();
             driver.findElement(By.id("mobilePhone")).sendKeys(phoneNumber);
             
-            
-
             MyDriverManager.wait(4,8);
         
        
@@ -272,10 +271,10 @@ public class webDe {
             driver.findElement(By.xpath(eMailFeld)).sendKeys(fakeName);
             MyDriverManager.wait(6,8);
 
-            try {                          
-                driver.findElement(By.xpath("/html/body/onereg-app/div/onereg-form/div/div/form/section/section[1]/onereg-alias/fieldset/onereg-progress-meter/div[2]/div[2]/div/button")).click();
-            } catch (Exception e) {}
-            MyDriverManager.wait(5,7);
+                                   
+            driver.findElement(By.xpath("/html/body/onereg-app/div/onereg-form/div/div/form/section/section[1]/onereg-alias/fieldset/onereg-progress-meter/div[2]/div[2]/div/button")).click();
+            
+            MyDriverManager.wait(10,12);
             
             randomNumber = Integer.toString(rn.nextInt(500)-1);
 
