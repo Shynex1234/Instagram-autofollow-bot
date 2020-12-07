@@ -41,7 +41,7 @@ public final class App {
 					MyDriverManager.wait(1200,1200);
 				}
 				driver.close();
-				MyDriverManager.wait(200,400);
+				MyDriverManager.wait(200,300);
 			} catch (Exception e) { System.out.println("Account konnte wegen eines fehlers nicht erstellt werden: "+e.getMessage());}
 			if((i+1)!=startWert){
 				driver=MyDriverManager.getDriver();
