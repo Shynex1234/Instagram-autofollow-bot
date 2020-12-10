@@ -50,7 +50,7 @@ public class webDe {
 
         MyDriverManager.wait(3, 3);
 
-        if(MyDriverManager.ElementExistsXpath("error to many REquests, ask a admin...")){
+        if(requestedURLRejected()==true){
             return false;
         }
 
@@ -114,36 +114,38 @@ public class webDe {
         
         
         //check if everythig got accepted
-        boolean OtherError=false;
         while(!MyDriverManager.ElementExistsId("continueButton")){
 
             boolean canSolveCaptchaNow =true;
             //remake plz
-            if(MyDriverManager.ElementExistsXpath("/html/body/onereg-app/div/onereg-form/div/div/form/section/section[2]/onereg-progress-meter/onereg-personal-info/fieldset/fieldset/div/onereg-error-messages/pos-form-message/div/span/span")){
-                canSolveCaptchaNow=false;
-                zipCode = faker.address().zipCode();
-                setPlz(zipCode);
-                OtherError=false;
-            }
-            //remake phoneNumber
-            if(MyDriverManager.ElementExistsXpath("/html/body/onereg-app/div/onereg-form/div/div/form/section/section[4]/onereg-password-recovery/fieldset/onereg-progress-meter/onereg-form-row[1]/onereg-error-messages/pos-form-message/div/span/span")){
-                canSolveCaptchaNow=false;
-                phoneNumber = setPhoneNumber(faker);
-                OtherError=false;
-            }
+            String plzXpath ="/html/body/onereg-app/div/onereg-form/div/div/form/section/section[2]/onereg-progress-meter/onereg-personal-info/fieldset/fieldset/div/onereg-error-messages/pos-form-message/div/span/span";
+            String phoneNumberXPath ="/html/body/onereg-app/div/onereg-form/div/div/form/section/section[4]/onereg-password-recovery/fieldset/onereg-progress-meter/onereg-form-row[1]/onereg-error-messages/pos-form-message/div/span/span";
+            
 
-            //Wenn ein anderer Fehler auftritt
-            if(OtherError){
-                return false;
+             if(MyDriverManager.ElementExistsXpath(plzXpath)){
+                 canSolveCaptchaNow=false;
+                    zipCode = faker.address().zipCode();
+                     setPlz(zipCode);
+               
+                }
+                //remake phoneNumber
+            if(MyDriverManager.ElementExistsXpath(phoneNumberXPath)){
+                canSolveCaptchaNow=false;
+               phoneNumber = setPhoneNumber(faker);
+                   
             }
+            
+            
+            
+            
             //captcha | Ich löse das captcha erst hier um sicher zu gehen, dass alles richtig einegegeben wurde, damit ich keine unnötigen Anfragen mache
             if(canSolveCaptchaNow){
                 String captcha = solveCaptcha();
                 driver.findElement(By.id("captcha")).clear();
                 driver.findElement(By.id("captcha")).sendKeys(captcha);
-                OtherError=true;
+                
             }
-
+               MyDriverManager.wait(3,2);
             //create account button
             driver.findElement(By.xpath("/html/body/onereg-app/div/onereg-form/div/div/form/section/section[5]/onereg-terms-and-conditions/onereg-progress-meter/fieldset/div[3]/div/button/span")).click();
             MyDriverManager.wait(4,5);
@@ -180,6 +182,15 @@ public class webDe {
             
 
         return phoneNumber;
+    }
+
+    private static boolean requestedURLRejected(){
+        if(MyDriverManager.ElementExistsXpath("/html/body")){
+            if(driver.findElement(By.xpath("/html/body")).getText().contains("Please consult with your administrator")){
+                return true;
+            }
+        }
+        return false;
     }
 
     

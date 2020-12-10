@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import mailManager.Instagram.scraper.ImageScraper;
 import mailManager.createEMails.webDe;
 import mailManager.createEMails.ManageDb.LiteSQL;
 import mailManager.createEMails.ManageDb.SQLManager;
@@ -31,26 +32,36 @@ public final class App {
 		SQLManager.onCreate();
 		driver=MyDriverManager.getDriver();
 
+		
 		WaitForShutdown();
-		int startWert=30;
-		for (int i = 0; i < startWert; i++) {
+
+		ImageScraper.start(driver);
+		//Read E-Mails
+		//LoginToMail.LoginToAllAccounts(driver);
+
+		//register Accounts
+		//RegisterAccounts(50);
+
+		//shutDown();
+		
+	}
+	private static void RegisterAccounts(int anzahl){
+		
+		for (int i = 0; i < anzahl; i++) {
 			
 			try {
 				if(webDe.start(driver)==false){//Ip got rejected
 					System.out.println("Ip got rejected");
 					MyDriverManager.wait(1200,1200);
 				}
+				System.out.println("Account Number: "+i);
 				driver.close();
-				MyDriverManager.wait(200,300);
+				MyDriverManager.wait(30,60);
 			} catch (Exception e) { System.out.println("Account konnte wegen eines fehlers nicht erstellt werden: "+e.getMessage());}
-			if((i+1)!=startWert){
+			if((i+1)!=anzahl){
 				driver=MyDriverManager.getDriver();
 			}
-		}   
-		
-		shutDown();
-		
-		
+		} 
 	}
 
 	static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -63,13 +74,12 @@ public final class App {
 			try {
 
 				while ((line = reader.readLine()) != null) {
-					if (line.equalsIgnoreCase("stop")) {
+					System.out.println(line);
+					if (line.equals("stop")) {
 
 						shutDown();
 						break;
-					} else {
-						System.out.println("Use 'stop' to stop the program");
-					}
+					} 
 
 				}
 

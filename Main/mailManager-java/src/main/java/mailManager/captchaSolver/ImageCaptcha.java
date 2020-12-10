@@ -17,6 +17,7 @@ public class ImageCaptcha {
         try {
             solver.solve(captcha);
             System.out.println("Captcha solved: " + captcha.getCode());
+            solver.report(captcha.getId(), true);
             return captcha.getCode();
         } catch (Exception e) {
             System.out.println("Error occurred: " + e.getMessage());
