@@ -51,11 +51,16 @@ public class MyDriverManager {
         options.addArguments("disable-infobars");
 
         //proxy
-        Proxy proxy = new Proxy();
-        proxy.setSslProxy(proxyIp+":"+proxyPort);
+        
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        capabilities.setCapability(ChromeOptions.CAPABILITY, options); 
-        capabilities.setCapability(CapabilityType.PROXY,proxy); 
+        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+         
+        if(!proxyIp.equals("")){
+            Proxy proxy = new Proxy();
+            proxy.setSslProxy(proxyIp+":"+proxyPort);
+            capabilities.setCapability(CapabilityType.PROXY,proxy); 
+        }
+        
 
         driver = new ChromeDriver(capabilities);
         
