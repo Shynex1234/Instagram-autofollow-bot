@@ -1,4 +1,4 @@
-package mailManager.createEMails.ManageDb;
+package bot.ManageDb;
 
 public class Person {
     public String mail;

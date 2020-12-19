@@ -1,4 +1,4 @@
-package mailManager.createEMails.ManageDb;
+package bot.ManageDb;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,10 +12,10 @@ public class LiteSQL {
 
 	private static Connection conn;
 	private static Statement stmt;
-	public static  void connect() {
+	public static  void connect(String databaseLocation) {
 		conn=null;
 		try {
-			File file = new File("database.db");
+			File file = new File(databaseLocation+".db");
 			if(!file.exists()) {
 				System.out.println("created new database");
 				file.createNewFile();

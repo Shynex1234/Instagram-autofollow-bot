@@ -1,4 +1,4 @@
-package mailManager;
+package bot;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,20 +6,27 @@ import java.util.List;
 import java.util.Random;
 
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Point;
+import org.openqa.selenium.Proxy;
 
 public class MyDriverManager {
     
     public static ChromeDriver driver;
-    public static ChromeDriver getDriver() {
+    public static ChromeDriver getDriver(boolean randomUserAgent, String proxyIp, String proxyPort) {
         //WebDriverManager.chromedriver().setup();
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 
+        String userAgent="";
+        if(randomUserAgent){
+            userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/"+getRandomChromeVersion()+" Safari/537.36";
+        }
+        else{
+            userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280 Safari/537.36";
+        }
         
-        String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/"+getRandomChromeVersion()+" Safari/537.36";
         ChromeOptions options = new ChromeOptions();
         List<String> arguments = new ArrayList<String>();
         arguments.add("--profile-directory=Default");
@@ -43,15 +50,22 @@ public class MyDriverManager {
         options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
         options.addArguments("disable-infobars");
 
-        driver = new ChromeDriver(options);
+        //proxy
+        Proxy proxy = new Proxy();
+        proxy.setSslProxy(proxyIp+":"+proxyPort);
+        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+        capabilities.setCapability(ChromeOptions.CAPABILITY, options); 
+        capabilities.setCapability(CapabilityType.PROXY,proxy); 
+
+        driver = new ChromeDriver(capabilities);
         
-        JavascriptExecutor js = (JavascriptExecutor) driver;  
-        js.executeScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
+        //to the left screen
+        //JavascriptExecutor js = (JavascriptExecutor) driver;  
+        //js.executeScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
 
         
-         //to the left screen
-         Point p = new Point(-1800,0);
-     	 driver.manage().window().setPosition(p);
+         //Point p = new Point(-1800,0);
+     	 //driver.manage().window().setPosition(p);
         
         return driver;
     }
@@ -87,13 +101,13 @@ public class MyDriverManager {
             return false;
         }
     }
+    
     public static boolean ElementExistsId(String id){
         try{
             driver.findElement(By.id(id));
             return true;
         }
          catch (Exception e) {
-             
             return false;
         }
     }
