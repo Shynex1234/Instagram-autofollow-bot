@@ -78,7 +78,8 @@ public final class App {
                                 try{
                                     Instagram.follow(anzahl);
                                 }catch(Exception e){
-                                    System.out.println("Beim folgen ist ein problem aufgetreten: "+e);
+                                    System.out.println("Beim folgen ist ein problem aufgetreten: ");
+                                    e.printStackTrace();
                                 }
                                 
                             }
