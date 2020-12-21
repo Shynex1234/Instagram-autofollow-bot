@@ -36,7 +36,7 @@ public class Instagram {
         String xpathDrei ="";
         String xpathVier ="";
         while(anzahl+1!=addetUsers)
-        {    
+        {               //html/body/div[6]/div/div/div[2]/div/div/div[6]
             xpathEins ="/html/body/div[5]/div/div/div[2]/ul/div/li["+count+"]/div/div[2]/div[1]/div/div/span/a";
             xpathZwei ="/html/body/div[5]/div/div/div[2]/ul/div/li["+count+"]/div/div[1]/div[2]/div[1]/span/a";
             xpathDrei ="/html/body/div[6]/div/div/div[2]/div/div/div["+count+"]/div[2]/div[1]/div/span/a";
@@ -59,6 +59,7 @@ public class Instagram {
             System.out.println("Element gefunden. Xpath:"+xpathVier);
            }                                   
            if(ele==null){
+               System.out.println("Element ist null, also weiter scrollen");
              scrollPoints+=50;
              scroll_Page(scrollElement, scrollPoints);
              continue;
@@ -67,6 +68,7 @@ public class Instagram {
            String name =ele.getAttribute("title");
            if(!SQLManager.alreadyFollowed(name)){
                //follow
+               System.out.println("Benutzer "+name+" wird geaddet");
                clickAddButtons(scrollElement, scrollPoints, count);
                SQLManager.addProfileToAngefragt(name);
                System.out.println(name+" wurde geaddet "+addetUsers);
@@ -174,52 +176,79 @@ public class Instagram {
     private static void clickAddButtons(WebElement ele, int scrollPoints, int count){
         int ansfangsScrollPoints=scrollPoints;
        
-        //abonnenten Liste
+        //abonnenten Liste 
         String xpathEins ="/html/body/div[5]/div/div/div[2]/ul/div/li["+count+"]/div/div[3]/button";
         String xpathZwei ="/html/body/div[5]/div/div/div[2]/ul/div/li["+count+"]/div/div[2]/button";
         String xpathDrei ="/html/body/div[6]/div/div/div[2]/ul/div/li["+count+"]/div/div[3]/button";
         String xpathVier ="/html/body/div[6]/div/div/div[2]/ul/div/li["+count+"]/div/div[2]/button";
-        //Like Liste
-        String xpathFünf ="/html/body/div[6]/div/div/div[2]/div/div/div["+count+"]/div[3]/button ";
-        while(true){           
+        String xpathFünf ="/html/body/div[6]/div/div/div[2]/ul/div/li["+count+"]/div/div[2]/button";
+        String xpathSechs ="/html/body/div[5]/div/div/div[2]/div/div/div["+count+"]/div[3]/button";
+        String xpathSieben ="/html/body/div[6]/div/div/div[2]/div/div/div["+count+"]/div[3]/button";
+        
+        while(true){  
+            WebElement element = null; 
+            //xpath 1 exists        
             if(MyDriverManager.ElementExistsXpath(xpathEins))  {
-                WebElement element = driver.findElement(By.xpath(xpathEins));
+                 element = driver.findElement(By.xpath(xpathEins));
                 if(element.isEnabled()){
                     element.click();
                     break;
                 }
-            }else if(MyDriverManager.ElementExistsXpath(xpathZwei))  {
+            }
+            //xpath 2 exists
+            else if(MyDriverManager.ElementExistsXpath(xpathZwei))  {
                 
-                WebElement element = driver.findElement(By.xpath(xpathZwei));
-                if(element.isEnabled()){
-                    element.click();
-                    break;
-                }
-            }     
-            else if(MyDriverManager.ElementExistsXpath(xpathDrei))  {
-                    
-                WebElement element = driver.findElement(By.xpath(xpathDrei));
+                element = driver.findElement(By.xpath(xpathZwei));
                 if(element.isEnabled()){
                     element.click();
                     break;
                 }
             }  
+            //xpath 3 exists   
+            else if(MyDriverManager.ElementExistsXpath(xpathDrei))  {
+                
+                element = driver.findElement(By.xpath(xpathDrei));
+                if(element.isEnabled()){
+                    element.click();
+                    break;
+                }
+            }  
+            //xpath 4 exists   
             else if(MyDriverManager.ElementExistsXpath(xpathVier))  {
                     
-                WebElement element = driver.findElement(By.xpath(xpathVier));
+                element = driver.findElement(By.xpath(xpathVier));
                 if(element.isEnabled()){
                     element.click();
                     break;
                 }
             }  
+            //xpath 5 exists
             else if(MyDriverManager.ElementExistsXpath(xpathFünf))  {
                     
-                WebElement element = driver.findElement(By.xpath(xpathFünf));
+                 element = driver.findElement(By.xpath(xpathFünf));
                 if(element.isEnabled()){
                     element.click();
                     break;
                 }
-            }     
+            } 
+            //xpath 6 exists 
+            else if(MyDriverManager.ElementExistsXpath(xpathSechs))  {
+                    
+                 element = driver.findElement(By.xpath(xpathSechs));
+                if(element.isEnabled()){
+                    element.click();
+                    break;
+                }
+            }  
+            //xpath 7 exists 
+            else if(MyDriverManager.ElementExistsXpath(xpathSieben))  {
+                    
+                 element = driver.findElement(By.xpath(xpathSieben));
+                if(element.isEnabled()){
+                    element.click();
+                    break;
+                }
+            }    
             else {
                 MyDriverManager.wait(2,3);
                 scroll_Page(ele, scrollPoints);
