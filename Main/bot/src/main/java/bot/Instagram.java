@@ -3,17 +3,11 @@ package bot;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
-import java.util.stream.Collectors;
-import java.io.*;
 
 import bot.ManageDb.SQLManager;
 
-
-import org.openqa.selenium.JavascriptExecutor;
 
 public class Instagram {
     static ChromeDriver driver=null;
@@ -31,22 +25,41 @@ public class Instagram {
             System.out.println("scroll element nicht gefunden");
         }
         int scrollPoints=52;
-        int addetUsers =0;
+        int addetUsers =1;
 
 
-        WebElement ele =null;
-        while(anzahl!=addetUsers)
-        {                                                   
-           if(MyDriverManager.ElementExistsXpath("/html/body/div[5]/div/div/div[2]/ul/div/li["+count+"]/div/div[2]/div[1]/div/div/span/a")){
-             ele = driver.findElement(By.xpath("/html/body/div[5]/div/div/div[2]/ul/div/li["+count+"]/div/div[2]/div[1]/div/div/span/a"));
+        WebElement ele;  
+                        
+                          
+        String xpathEins ="";
+        String xpathZwei ="";
+        String xpathDrei ="";
+        String xpathVier ="";
+        while(anzahl+1!=addetUsers)
+        {    
+            xpathEins ="/html/body/div[5]/div/div/div[2]/ul/div/li["+count+"]/div/div[2]/div[1]/div/div/span/a";
+            xpathZwei ="/html/body/div[5]/div/div/div[2]/ul/div/li["+count+"]/div/div[1]/div[2]/div[1]/span/a";
+            xpathDrei ="/html/body/div[6]/div/div/div[2]/div/div/div["+count+"]/div[2]/div[1]/div/span/a";
+            xpathVier ="/html/body/div[5]/div/div/div[2]/div/div/div["+count+"]/div[2]/div[1]/div/span/a";
+           ele = null;                                                                     
+           if(MyDriverManager.ElementExistsXpath(xpathEins)){
+             ele = driver.findElement(By.xpath(xpathEins));
+             System.out.println("Element gefunden. Xpath:"+xpathEins);
            }                                           
-           else if(MyDriverManager.ElementExistsXpath("/html/body/div[5]/div/div/div[2]/ul/div/li["+count+"]/div/div[1]/div[2]/div[1]/span/a")) {
-                 ele = driver.findElement(By.xpath("/html/body/div[5]/div/div/div[2]/ul/div/li["+count+"]/div/div[1]/div[2]/div[1]/span/a"));
+           else if(MyDriverManager.ElementExistsXpath(xpathZwei)) {
+                 ele = driver.findElement(By.xpath(xpathZwei));
+                 System.out.println("Element gefunden. Xpath:"+xpathZwei);
            }  
-           else if(MyDriverManager.ElementExistsXpath("/html/body/div[6]/div/div/div[2]/div/div/div["+count+"]/div[2]/div[1]/div/span/a")) {
-            ele = driver.findElement(By.xpath("/html/body/div[6]/div/div/div[2]/div/div/div["+count+"]/div[2]/div[1]/div/span/a"));
-        }                                     
+           else if(MyDriverManager.ElementExistsXpath(xpathDrei)) {
+            ele = driver.findElement(By.xpath(xpathDrei));
+            System.out.println("Element gefunden. Xpath:"+xpathDrei);
+           }    
+           else if(MyDriverManager.ElementExistsXpath(xpathVier)) {
+            ele = driver.findElement(By.xpath(xpathVier));
+            System.out.println("Element gefunden. Xpath:"+xpathVier);
+           }                                   
            if(ele==null){
+             scrollPoints+=50;
              scroll_Page(scrollElement, scrollPoints);
              continue;
            }  
@@ -64,7 +77,7 @@ public class Instagram {
             System.out.println(name+" wurde bereits geaddet");
            }
            
-           
+           System.out.println("");
            scrollPoints+=50;
            count++;  
        }
