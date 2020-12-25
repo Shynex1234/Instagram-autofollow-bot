@@ -49,7 +49,7 @@ public final class App {
         driver = MyDriverManager.getDriver(false,proxyId,proxyPort);
         driver.get("https://whatismyipaddress.com/de/meine-ip");
         System.out.println("please check the Ip");
-        MyDriverManager.wait(5,5);
+        MyDriverManager.wait(2,2);
         driver.get("https://www.instagram.com");
         
         SQLManager.onCreate();
