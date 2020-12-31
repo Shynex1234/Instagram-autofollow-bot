@@ -14,7 +14,7 @@ import java. util.List;
 public class Instagram {
     static ChromeDriver driver=null;
     public static void follow(int anzahl){
-        
+    
        driver = App.driver;
                                                            
         
@@ -111,12 +111,13 @@ public class Instagram {
         }
            
        }
-       SQLManager.addlog(addetUsers+" Benutzern getfolgt",0,0);
-       System.out.println("Es wurden "+addetUsers+" geaddet.");
+       SQLManager.addlog(addetUsers-1+" Benutzern getfolgt",0,0);
+       System.out.println("Es wurden "+(addetUsers-1)+" geaddet.");
     }
 
     public static void unfollow(int anzahl){
   
+        
         driver = App.driver;
         MyDriverManager.wait(3,6);
 
@@ -255,8 +256,8 @@ public class Instagram {
     
     public static void log(){
         driver = App.driver;
-        String follower = driver.findElement(By.xpath("/html/body/div[1]/section/main/div/header/section/ul/li[2]/a/span")).getText();
-        String following = driver.findElement(By.xpath("/html/body/div[1]/section/main/div/header/section/ul/li[3]/a/span")).getText();
+        String follower = driver.findElement(By.xpath("/html/body/div[1]/section/main/div/header/section/ul/li[2]/a/span")).getText().replace(".", "").replace("k","000");
+        String following = driver.findElement(By.xpath("/html/body/div[1]/section/main/div/header/section/ul/li[3]/a/span")).getText().replace(".", "").replace("k","000");
 
         SQLManager.addlog("Update", Integer.parseInt(following), Integer.parseInt(follower));
     }

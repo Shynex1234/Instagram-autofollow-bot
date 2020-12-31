@@ -10,6 +10,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.Proxy;
 
 public class MyDriverManager {
@@ -63,6 +64,8 @@ public class MyDriverManager {
         
 
         driver = new ChromeDriver(capabilities);
+        driver.get("https://whatismyipaddress.com/de/meine-ip");
+        MyDriverManager.wait(1,1);
         
         //to the left screen
         //JavascriptExecutor js = (JavascriptExecutor) driver;  
@@ -115,5 +118,16 @@ public class MyDriverManager {
          catch (Exception e) {
             return false;
         }
+    }
+
+    public static void hideBrowser(){
+        Point p = new Point(0,-1800);
+         driver.manage().window().setPosition(p);
+         System.out.println("Der Browser wurde versteckt.");
+    }
+    public static void showBrowser(){
+        Point p = new Point(0,0);
+         driver.manage().window().setPosition(p);
+         System.out.println("Der Browser wurde hervorgeholt.");
     }
 }

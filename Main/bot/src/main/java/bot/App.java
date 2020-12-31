@@ -47,7 +47,6 @@ public final class App {
         LiteSQL.connect(databse);
 
         driver = MyDriverManager.getDriver(false,proxyId,proxyPort);
-        driver.get("https://whatismyipaddress.com/de/meine-ip");
         System.out.println("please check the Ip");
         MyDriverManager.wait(2,2);
         driver.get("https://www.instagram.com");
@@ -67,6 +66,12 @@ public final class App {
                         shutDown();
 						break;
                     } 
+                    else if(line.equals("hide")){
+                        MyDriverManager.hideBrowser();
+                    }
+                    else if(line.equals("show")){
+                        MyDriverManager.showBrowser();
+                    }
                     else if (args2[0].equals("follow")) {
 
                         int anzahl =0;
@@ -125,9 +130,11 @@ public final class App {
                         System.out.println("----------------------------");
                         System.out.println("Befehle:");
                         System.out.println("-stop");
-                        System.out.println("- < follow [zahl] > Gehe auf irgendeine Liste von Profilen und starte dem command.");
-                        System.out.println("- < unfollow [zahl] > Gehe dazu auf dein Profil.");
-                        System.out.println("- < log > Speichert die anzahl deiner Abonenten und abonierten ab. Gehe dazu auf dein Profil.");
+                        System.out.println(" follow   [zahl]  Gehe auf irgendeine Liste von Profilen und starte dem command.");
+                        System.out.println(" unfollow [zahl]  Gehe dazu auf dein Profil.");
+                        System.out.println(" log              Speichert die Anzahl deiner Abonenten und abonierten ab. Gehe dazu auf dein Profil.");
+                        System.out.println(" hide             Versteckt den Browser.");
+                        System.out.println(" show             Zeigt den Browser.");
                         System.out.println("");
                     }
 
@@ -139,18 +146,14 @@ public final class App {
     }
 
     private static void shutDown() {
+        
         LiteSQL.disconnect();
 		try {
+            reader.close();
+            driver.close();
 			System.exit(0);
-			reader.close();
         } 
-        catch (IOException e) {
-			
-			e.printStackTrace();
-		}
-		if(driver!=null){
-			driver.close();
-		}
+        catch (IOException e) {}
 		
 	}
 }
