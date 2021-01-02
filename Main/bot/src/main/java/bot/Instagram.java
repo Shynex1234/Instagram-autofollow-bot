@@ -23,97 +23,97 @@ public class Instagram {
 
         
  
-                        
-        boolean abwechseln = true;         
+                           
+        String letzeterGeaddeteName="";  
+        int pageReloadedCount=0;  
         while(anzahl>=addetUsers)
         {    //org.openqa.selenium.StaleElementReferenceException
-        try{
-            String letztername="";
-            String letzterNamederVorherigenRunde=""; 
-                WebElement scrollElement =null;
-            if(MyDriverManager.ElementExistsXpath("/html/body/div[5]/div/div/div[2]")){
-                scrollElement =driver.findElement(By.xpath("/html/body/div[5]/div/div/div[2]"));
-            }                                            
-            else if(MyDriverManager.ElementExistsXpath("/html/body/div[6]/div/div/div[2]/div")){
-                scrollElement =driver.findElement(By.xpath("/html/body/div[6]/div/div/div[2]/div"));
-            }else{
-                System.out.println("scroll element nicht gefunden");
-            } 
-            
-            WebElement firstElement =null;                                                   
-            try{                                           
-                firstElement = driver.findElement(By.xpath("/html/body/div[6]/div/div/div[2]/div/div/div[1]"));
-            } 
-            catch(Exception e) {
-                try{                                            
-                    firstElement = driver.findElement(By.xpath("//html/body/div[5]/div/div/div[2]/ul/div/li[1]/div"));
-                }catch(Exception ex){                           
-                    firstElement = driver.findElement(By.xpath("/html/body/div[5]/div/div/div[2]/div/div/div[1]"));
-                }
-                    
-            }     
-            System.out.println("erstes Element: "+firstElement);                                     
-            
-            List<WebElement> listOfElements = firstElement.findElements(By.xpath("following-sibling::*"));
-            listOfElements.add(0, firstElement);
-            System.out.println("Es wurden "+listOfElements.size()+" neue Elemente geladen");
-
-            String name="";
-            for(WebElement element : listOfElements){
+            try
+            {
+                    WebElement scrollElement =null;
+                if(MyDriverManager.ElementExistsXpath("/html/body/div[5]/div/div/div[2]")){
+                    scrollElement =driver.findElement(By.xpath("/html/body/div[5]/div/div/div[2]"));
+                }                                            
+                else if(MyDriverManager.ElementExistsXpath("/html/body/div[6]/div/div/div[2]/div")){
+                    scrollElement =driver.findElement(By.xpath("/html/body/div[6]/div/div/div[2]/div"));
+                }else{
+                    System.out.println("scroll element nicht gefunden");
+                } 
                 
-                try{//falls das element nicht mehr actuell ist
-                    name =element.findElement(By.cssSelector(".FPmhX.notranslate.MBL3Z")).getAttribute("title");
-                    if(!SQLManager.alreadyFollowed(name)){
-                        //follow
-                        System.out.println("Benutzer "+name+" wird geaddet");
-                        clickAddButton(scrollElement, scrollPoints, element);
-                        SQLManager.addProfileToAngefragt(name);
-                        System.out.println(name+" wurde geaddet "+addetUsers+"/"+anzahl);
-                        addetUsers++;
-                        MyDriverManager.wait(36,48);
+                WebElement firstElement =null;                                                   
+                try{                                           
+                    firstElement = driver.findElement(By.xpath("/html/body/div[6]/div/div/div[2]/div/div/div[1]"));
+                } 
+                catch(Exception e) {
+                    try{                                            
+                        firstElement = driver.findElement(By.xpath("//html/body/div[5]/div/div/div[2]/ul/div/li[1]/div"));
+                    }catch(Exception ex){                           
+                        firstElement = driver.findElement(By.xpath("/html/body/div[5]/div/div/div[2]/div/div/div[1]"));
                     }
-                    else{
-                        System.out.println(name+" wurde bereits geaddet");
-                    }
-                    if(anzahl<=addetUsers){
+                        
+                }     
+                System.out.println("erstes Element: "+firstElement);                                     
+                
+                List<WebElement> listOfElements = firstElement.findElements(By.xpath("following-sibling::*"));
+                listOfElements.add(0, firstElement);
+                System.out.println("Es wurden "+listOfElements.size()+" neue Elemente geladen");
+
+                String name="";
+                for(WebElement element : listOfElements){
+                    
+                    try{//falls das element nicht mehr actuell ist
+                        name =element.findElement(By.cssSelector(".FPmhX.notranslate.MBL3Z")).getAttribute("title");
+                        if(!SQLManager.alreadyFollowed(name)){
+                            //follow
+                            System.out.println("Benutzer "+name+" wird geaddet");
+                            clickAddButton(scrollElement, scrollPoints, element);
+                            SQLManager.addProfileToAngefragt(name);
+                            System.out.println(name+" wurde geaddet "+addetUsers+"/"+anzahl);
+                            addetUsers++;
+                            MyDriverManager.wait(36,48);
+                        }
+                        else{
+                            System.out.println(name+" wurde bereits geaddet");
+                            if(pageReloadedCount==10){
+                                System.out.println("Die Seite wurde bereits 10 mal neu geladen, wesahlb der follow forgang jetzt gestoppt wird. Vielleicht sind bereits alle Leute der Liste geaddet.");
+                                break;
+                            }
+                            if(name.equals(letzeterGeaddeteName)){
+                                reloadFollowList();
+                                MyDriverManager.wait(1,3);
+                                scroll_Page(scrollElement, scrollPoints);
+                                pageReloadedCount++;
+                            }
+                        }
+                        if(anzahl<=addetUsers){
+                            break;
+                        }
+                    }catch(Exception e){
+                        
                         break;
                     }
-                }catch(Exception e){
                     
+                }
+                if(pageReloadedCount==10){
+                   
                     break;
                 }
-                
-            }
-
             
-            if(abwechseln){
-                letztername=name;
-                abwechseln=false;
-            }else{
-                letzterNamederVorherigenRunde=name;
-                abwechseln=true;
+            System.out.println("");
+            scroll_Page(scrollElement, scrollPoints);
+            scrollPoints+=500;
+            }catch(org.openqa.selenium.StaleElementReferenceException e){
+                System.out.println("org.openqa.selenium.StaleElementReferenceException");
+                System.out.println("Es wird 15-20s gewartet und dann weiter gemacht");
+                MyDriverManager.wait(15,20);
+                continue;
             }
-            if(letztername.equals(letzterNamederVorherigenRunde)){
-                System.out.println("Es wurden alle Leute dieser Liste geaddet");
-                break;
-            }
-
            
-           
-           System.out.println("");
-           scroll_Page(scrollElement, scrollPoints);
-           scrollPoints+=500;
-        }catch(org.openqa.selenium.StaleElementReferenceException e){
-            System.out.println("org.openqa.selenium.StaleElementReferenceException");
-            System.out.println("Es wird 15-20s gewartet und dann weiter gemacht");
-            MyDriverManager.wait(15,20);
-            continue;
         }
-           
-       }
        SQLManager.addlog(addetUsers-1+" Benutzern getfolgt",0,0);
        System.out.println("Es wurden "+(addetUsers-1)+" geaddet.");
     }
+    
 
     public static void unfollow(int anzahl){
   
@@ -176,6 +176,11 @@ public class Instagram {
        
         
         
+    }
+    private static void reloadFollowList(){
+        driver.get(driver.getCurrentUrl());
+        MyDriverManager.wait(1,3);
+        driver.findElement(By.xpath("/html/body/div[1]/section/main/div/div[1]/article/div[3]/section[2]/div/div[2]/button")).click();
     }
     private static void clickRemoveButtons(WebElement scrollElement, WebElement ele, int scrollPoints){
         

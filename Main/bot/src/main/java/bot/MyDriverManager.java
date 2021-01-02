@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -14,29 +15,31 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.Proxy;
 
 public class MyDriverManager {
-    
+
     public static ChromeDriver driver;
+
     public static ChromeDriver getDriver(boolean randomUserAgent, String proxyIp, String proxyPort) {
-        //WebDriverManager.chromedriver().setup();
+        // WebDriverManager.chromedriver().setup();
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 
-        String userAgent="";
-        if(randomUserAgent){
-            userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/"+getRandomChromeVersion()+" Safari/537.36";
-        }
-        else{
+        String userAgent = "";
+        if (randomUserAgent) {
+            userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/"
+                    + getRandomChromeVersion() + " Safari/537.36";
+        } else {
             userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280 Safari/537.36";
         }
-        
+
         ChromeOptions options = new ChromeOptions();
         List<String> arguments = new ArrayList<String>();
         arguments.add("--profile-directory=Default");
-        arguments.add("--user-agent="+userAgent);
+        arguments.add("--user-agent=" + userAgent);
         arguments.add("--disable-blink-features=AutomationControlled");
         arguments.add("--window-size=1280,800");
 
-        //erstellt fake audio devices, damit man nicht bei tausend andfragen die genau gleichen devices hat
-        //arguments.add("--disable-permissions-api");
+        // erstellt fake audio devices, damit man nicht bei tausend andfragen die genau
+        // gleichen devices hat
+        // arguments.add("--disable-permissions-api");
         arguments.add("--disable-user-media-security");
         arguments.add("--disable-encrypted-media");
         arguments.add("--disable-gesture-requirement-for-media-playback");
@@ -44,37 +47,25 @@ public class MyDriverManager {
         arguments.add("--disable-media-thread-for-media-playback[8]");
         arguments.add("use-fake-ui-for-media-stream");
         options.addArguments(arguments);
-        
-        
-        
-        
+
         options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
         options.addArguments("disable-infobars");
 
-        //proxy
-        
+        // proxy
+
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-         
-        if(!proxyIp.equals("")){
+
+        if (!proxyIp.equals("")) {
             Proxy proxy = new Proxy();
-            proxy.setSslProxy(proxyIp+":"+proxyPort);
-            capabilities.setCapability(CapabilityType.PROXY,proxy); 
+            proxy.setSslProxy(proxyIp + ":" + proxyPort);
+            capabilities.setCapability(CapabilityType.PROXY, proxy);
         }
-        
 
         driver = new ChromeDriver(capabilities);
-        driver.get("https://whatismyipaddress.com/de/meine-ip");
-        MyDriverManager.wait(1,1);
-        
-        //to the left screen
-        //JavascriptExecutor js = (JavascriptExecutor) driver;  
-        //js.executeScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
 
-        
-         //Point p = new Point(-1800,0);
-     	 //driver.manage().window().setPosition(p);
-        
+        driver.get("https://whatismyipaddress.com/de/meine-ip");
+
         return driver;
     }
 
